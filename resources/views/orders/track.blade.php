@@ -6,7 +6,7 @@
         <title>Tracking {{ $order->invoice_number }} - ZOLIX</title>
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="tracking-body" x-data="shoeCareApp()" x-init="$nextTick(refreshIcons)">
+    <body class="tracking-body" x-data="shoeCareApp()" x-init="$nextTick(refreshIcons)" x-on:keydown.escape.window="closePhotoPreview()">
         <main class="tracking-shell">
             <header class="tracking-header">
                 <img src="{{ asset('assets/logo-putih.png') }}" alt="ZOLIX Shoe Care">
@@ -43,11 +43,25 @@
                             <div class="detail-photo-pair">
                                 <div class="detail-photo">
                                     <b>Before</b>
-                                    @if ($item->before_photo_path)<img src="{{ Storage::url($item->before_photo_path) }}" alt="Before {{ $item->item_name }}">@else <i data-lucide="camera-off"></i>@endif
+                                    @if ($item->before_photo_path)
+                                        <button class="detail-photo-button" type="button" x-on:click="openPhotoPreview(@js(Storage::url($item->before_photo_path)), @js('Before - ' . $item->item_name))">
+                                            <img src="{{ Storage::url($item->before_photo_path) }}" alt="Before {{ $item->item_name }}">
+                                            <span><i data-lucide="zoom-in"></i> Perbesar</span>
+                                        </button>
+                                    @else
+                                        <i data-lucide="camera-off"></i>
+                                    @endif
                                 </div>
                                 <div class="detail-photo">
                                     <b>After</b>
-                                    @if ($item->after_photo_path)<img src="{{ Storage::url($item->after_photo_path) }}" alt="After {{ $item->item_name }}">@else <span>Belum tersedia</span>@endif
+                                    @if ($item->after_photo_path)
+                                        <button class="detail-photo-button" type="button" x-on:click="openPhotoPreview(@js(Storage::url($item->after_photo_path)), @js('After - ' . $item->item_name))">
+                                            <img src="{{ Storage::url($item->after_photo_path) }}" alt="After {{ $item->item_name }}">
+                                            <span><i data-lucide="zoom-in"></i> Perbesar</span>
+                                        </button>
+                                    @else
+                                        <span>Belum tersedia</span>
+                                    @endif
                                 </div>
                             </div>
                             <div>
@@ -57,15 +71,6 @@
                             </div>
                             <strong>Rp {{ number_format($item->line_total, 0, ',', '.') }}</strong>
                         </div>
-                    @endforeach
-                </div>
-            </section>
-
-            <section class="tracking-card">
-                <h2>Timeline</h2>
-                <div class="detail-timeline">
-                    @foreach ($order->timelines as $timeline)
-                        <div><strong>{{ $timeline->label }}</strong><p>{{ $timeline->description }}</p><small>{{ $timeline->logged_at->format('d M Y H:i') }} WITA</small></div>
                     @endforeach
                 </div>
             </section>
@@ -187,5 +192,23 @@
                 <!-- <a class="create-order-button tracking-whatsapp" href="{{ $whatsappUrl }}" target="_blank" rel="noopener"><i data-lucide="message-circle"></i><span>Hubungi WhatsApp</span></a> -->
             </section>
         </main>
+        <div
+            class="photo-preview-modal"
+            x-cloak
+            x-show="photoPreview.open"
+            x-transition.opacity
+            x-on:click.self="closePhotoPreview()"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Preview foto sepatu"
+        >
+            <div class="photo-preview-dialog" x-transition.scale.origin.center>
+                <button class="photo-preview-close" type="button" x-on:click="closePhotoPreview()" aria-label="Tutup preview foto">
+                    <i data-lucide="x"></i>
+                </button>
+                <img x-bind:src="photoPreview.src" x-bind:alt="photoPreview.title">
+                <strong x-text="photoPreview.title"></strong>
+            </div>
+        </div>
     </body>
 </html>

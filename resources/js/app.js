@@ -189,6 +189,11 @@ window.shoeCareApp = (payload = {}) => ({
             photoPreview: '',
         },
     ],
+    photoPreview: {
+        open: false,
+        src: '',
+        title: '',
+    },
     screenTabs: ['login', 'orders', 'detail'],
     statusTabs: ['Semua', 'Diterima', 'Proses', 'Selesai', 'Diambil', 'Dibatalkan'],
     dashboardTabs: [
@@ -217,6 +222,21 @@ window.shoeCareApp = (payload = {}) => ({
                 light: '#ffffff',
             },
         });
+    },
+
+    openPhotoPreview(src, title = 'Preview foto') {
+        this.photoPreview = {
+            open: true,
+            src,
+            title,
+        };
+        this.refreshIcons();
+    },
+
+    closePhotoPreview() {
+        this.photoPreview.open = false;
+        this.photoPreview.src = '';
+        this.photoPreview.title = '';
     },
 
     normalizeStatus(status) {
