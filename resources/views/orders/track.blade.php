@@ -92,39 +92,6 @@
                 </div>
                 <div class="total-pay-card"><span>Total</span><strong>Rp {{ number_format($order->total_amount, 0, ',', '.') }}</strong></div>
 
-                <div class="tracking-payment-methods">
-                    <div>
-                        <span>Metode Pembayaran</span>
-                        <h2>{{ $remainingPayment <= 0 ? 'Pembayaran Lunas' : 'Pilih cara bayar' }}</h2>
-                        <p>
-                            @if ($remainingPayment <= 0)
-                                Pembayaran order ini sudah tercatat lunas.
-                            @elseif ($pendingQrisPayments->isNotEmpty())
-                                QRIS aktif tersedia. Klik tombol di bawah untuk melihat dan scan QRIS.
-                            @else
-                                Klik tombol di bawah untuk membuat QRIS otomatis sesuai sisa tagihan.
-                            @endif
-                        </p>
-                    </div>
-
-                    @if ($remainingPayment <= 0)
-                        <span class="tracking-payment-paid"><i data-lucide="badge-check"></i> Lunas</span>
-                    @elseif ($pendingQrisPayments->isNotEmpty())
-                        <a class="tracking-payment-button" href="#tracking-qris-section">
-                            <i data-lucide="qr-code"></i>
-                            <span>Bayar dengan QRIS</span>
-                        </a>
-                    @else
-                        <form class="tracking-payment-form" method="POST" action="{{ route('orders.track.qris.generate', $order->invoice_number) }}">
-                            @csrf
-                            <button class="tracking-payment-button" type="submit">
-                            <i data-lucide="qr-code"></i>
-                            <span>Bayar dengan QRIS</span>
-                            </button>
-                        </form>
-                    @endif
-                </div>
-
                 @if ($remainingPayment > 0)
                     <div class="tracking-method-grid">
                         <form method="POST" action="{{ route('orders.track.qris.generate', $order->invoice_number) }}">
@@ -217,7 +184,7 @@
                         </div>
                     </div>
                 @endif
-                <a class="create-order-button tracking-whatsapp" href="{{ $whatsappUrl }}" target="_blank" rel="noopener"><i data-lucide="message-circle"></i><span>Hubungi WhatsApp</span></a>
+                <!-- <a class="create-order-button tracking-whatsapp" href="{{ $whatsappUrl }}" target="_blank" rel="noopener"><i data-lucide="message-circle"></i><span>Hubungi WhatsApp</span></a> -->
             </section>
         </main>
     </body>

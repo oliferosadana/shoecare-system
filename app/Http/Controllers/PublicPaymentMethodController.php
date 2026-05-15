@@ -4,13 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\Payment;
+use App\Services\AutoGopayClient;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Throwable;
 
 class PublicPaymentMethodController extends Controller
 {
-    public function store(Request $request, string $invoiceNumber): RedirectResponse
+    public function store(Request $request, string $invoiceNumber, AutoGopayClient $client): RedirectResponse
     {
         $order = Order::where('invoice_number', $invoiceNumber)->firstOrFail();
 
@@ -27,6 +29,7 @@ class PublicPaymentMethodController extends Controller
 
         $method = $validated['method'];
         $label = $method === 'cash' ? 'Cash di Outlet' : 'Transfer Manual';
+        $cancelledCount = $this->cancelOtherPendingMethods($order, $method, $client);
 
         $existingRequest = $order->payments()
             ->whereNull('provider')
@@ -49,6 +52,20 @@ class PublicPaymentMethodController extends Controller
                 'status' => 'payment_method',
                 'label' => 'Metode pembayaran dipilih',
                 'description' => 'Customer memilih metode pembayaran ' . $label . ' untuk sisa tagihan ' . $this->formatRupiah($remaining) . '.',
+                'logged_at' => now(),
+            ]);
+        } else {
+            $existingRequest->update([
+                'requested_amount' => $remaining,
+                'notes' => 'Customer tetap memilih metode pembayaran ' . $label . ' untuk sisa tagihan ' . $this->formatRupiah($remaining) . '.',
+            ]);
+        }
+
+        if ($cancelledCount > 0) {
+            $order->timelines()->create([
+                'status' => 'payment_method_changed',
+                'label' => 'Metode pembayaran diganti',
+                'description' => 'Metode pembayaran sebelumnya otomatis dibatalkan karena customer memilih ' . $label . '.',
                 'logged_at' => now(),
             ]);
         }
@@ -96,5 +113,35 @@ class PublicPaymentMethodController extends Controller
     private function formatRupiah(int $amount): string
     {
         return 'Rp ' . number_format($amount, 0, ',', '.');
+    }
+
+    private function cancelOtherPendingMethods(Order $order, string $selectedMethod, AutoGopayClient $client): int
+    {
+        $payments = $order->payments()
+            ->where('status', 'pending')
+            ->where(function ($query) use ($selectedMethod) {
+                $query
+                    ->where('provider', 'autogopay')
+                    ->orWhere(function ($manualQuery) use ($selectedMethod) {
+                        $manualQuery
+                            ->whereNull('provider')
+                            ->where('method', '!=', $selectedMethod);
+                    });
+            })
+            ->get();
+
+        foreach ($payments as $payment) {
+            if ($payment->provider === 'autogopay' && $payment->provider_transaction_id) {
+                try {
+                    $client->cancel((string) $payment->provider_transaction_id);
+                } catch (Throwable $exception) {
+                    report($exception);
+                }
+            }
+
+            $payment->update(['status' => 'cancelled']);
+        }
+
+        return $payments->count();
     }
 }

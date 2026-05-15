@@ -48,6 +48,9 @@ class QrisPaymentController extends Controller
             ->first();
 
         if ($activePendingQris) {
+            $cancelledManualCount = $this->cancelPendingManualMethods($order);
+            $this->recordChangedPaymentMethodTimeline($request, $order, $cancelledManualCount, 'QRIS Otomatis');
+
             return back()
                 ->with('success', 'QRIS aktif sudah tersedia.')
                 ->withFragment('tracking-qris-section');
@@ -111,6 +114,9 @@ class QrisPaymentController extends Controller
             'logged_at' => now(),
             'created_by' => $request->user()?->id,
         ]);
+
+        $cancelledManualCount = $this->cancelPendingManualMethods($order);
+        $this->recordChangedPaymentMethodTimeline($request, $order, $cancelledManualCount, 'QRIS Otomatis');
 
         return back()
             ->with('success', "QRIS berhasil dibuat: {$payment->provider_transaction_id}")
@@ -296,6 +302,30 @@ class QrisPaymentController extends Controller
     private function paidAmount(Order $order): int
     {
         return min((int) $order->payments()->where('status', 'paid')->sum('amount_paid'), $order->total_amount);
+    }
+
+    private function cancelPendingManualMethods(Order $order): int
+    {
+        return $order->payments()
+            ->whereNull('provider')
+            ->whereIn('method', ['cash', 'transfer'])
+            ->where('status', 'pending')
+            ->update(['status' => 'cancelled']);
+    }
+
+    private function recordChangedPaymentMethodTimeline(Request $request, Order $order, int $cancelledCount, string $selectedLabel): void
+    {
+        if ($cancelledCount <= 0) {
+            return;
+        }
+
+        $order->timelines()->create([
+            'status' => 'payment_method_changed',
+            'label' => 'Metode pembayaran diganti',
+            'description' => 'Metode pembayaran sebelumnya otomatis dibatalkan karena customer memilih ' . $selectedLabel . '.',
+            'logged_at' => now(),
+            'created_by' => $request->user()?->id,
+        ]);
     }
 
     private function responseData(array $response): array
