@@ -60,6 +60,7 @@ COPY --from=vendor /app/vendor ./vendor
 COPY --from=assets /app/public/build ./public/build
 
 RUN php artisan package:discover --ansi || true
+RUN php artisan vendor:publish --tag=livewire:assets --ansi --force || true
 
 COPY docker/entrypoint.sh /usr/local/bin/zolix-entrypoint
 RUN chmod +x /usr/local/bin/zolix-entrypoint \

@@ -23,6 +23,8 @@ if [ ! -L public/storage ]; then
     php artisan storage:link >/dev/null 2>&1 || true
 fi
 
+php artisan vendor:publish --tag=livewire:assets --force >/dev/null 2>&1 || true
+
 if [ "${RUN_MIGRATIONS:-false}" = "true" ]; then
     php artisan migrate --force
 fi
