@@ -412,18 +412,35 @@ window.shoeCareApp = (payload = {}) => ({
     },
 });
 
-window.Alpine = Alpine;
+if (! window.Alpine) {
+    window.Alpine = Alpine;
+}
 
-Alpine.store('adminNav', {
-    open: false,
-    toggle() {
-        this.open = !this.open;
-    },
-    close() {
-        this.open = false;
-    },
+const registerAdminNavStore = (alpine) => {
+    if (!alpine?.store) {
+        return;
+    }
+
+    alpine.store('adminNav', {
+        open: false,
+        toggle() {
+            this.open = !this.open;
+        },
+        close() {
+            this.open = false;
+        },
+    });
+};
+
+registerAdminNavStore(Alpine);
+
+document.addEventListener('livewire:init', () => {
+    registerAdminNavStore(window.Alpine);
+    queueMicrotask(() => createIcons({ icons }));
 });
 
-Alpine.start();
+if (! document.querySelector('[wire\\:id]') && ! window.Livewire && ! window.Alpine?.started) {
+    Alpine.start();
+}
 window.addEventListener('refresh-icons', () => queueMicrotask(() => createIcons({ icons })));
 queueMicrotask(() => createIcons({ icons }));

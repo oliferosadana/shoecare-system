@@ -5,6 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>{{ $order->invoice_number }} - ZOLIX Shoe Care</title>
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @livewireStyles
     </head>
     <body class="dashboard-body" x-data="shoeCareApp()" x-init="$nextTick(refreshIcons)">
         <div class="dashboard-shell">
@@ -43,5 +44,7 @@
                 <livewire:orders.order-detail :order="$order" />
             </main>
         </div>
+
+        @livewireScripts
     </body>
 </html>
