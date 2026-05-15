@@ -133,6 +133,27 @@ class CreateOrderForm extends Component
         }
     }
 
+    public function updatedBeforePhotos($value, string $key): void
+    {
+        $this->validateOnly("beforePhotos.{$key}", [
+            "beforePhotos.{$key}" => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120', 'dimensions:max_width=6000,max_height=6000'],
+        ], [
+            "beforePhotos.{$key}.image" => 'Foto sepatu harus berupa file gambar.',
+            "beforePhotos.{$key}.mimes" => 'Foto sepatu harus berformat JPG, JPEG, PNG, atau WEBP.',
+            "beforePhotos.{$key}.max" => 'Ukuran foto sepatu maksimal 5MB.',
+            "beforePhotos.{$key}.dimensions" => 'Resolusi foto sepatu maksimal 6000x6000 piksel.',
+        ]);
+
+        $this->dispatch('refresh-icons');
+    }
+
+    public function removeBeforePhoto(string $key): void
+    {
+        unset($this->beforePhotos[$key]);
+        $this->resetValidation("beforePhotos.{$key}");
+        $this->dispatch('refresh-icons');
+    }
+
     public function resetForm(): void
     {
         $this->reset([

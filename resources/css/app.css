@@ -6329,6 +6329,13 @@ input {
     overflow: hidden;
 }
 
+.item-photo-upload-wrap {
+    display: grid;
+    gap: 7px;
+    justify-items: center;
+    min-width: 96px;
+}
+
 .item-photo-upload input {
     position: absolute;
     inset: 0;
@@ -6366,6 +6373,37 @@ input {
 .item-photo-upload:hover {
     border-color: var(--lime-deep);
     background: #f8ffe0;
+}
+
+.remove-item-photo-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    width: 100%;
+    min-height: 28px;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    border-radius: 999px;
+    color: #b91c1c;
+    background: #fff1f2;
+    font-size: 0.68rem;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+.remove-item-photo-button svg {
+    width: 13px;
+    height: 13px;
+}
+
+.item-photo-error {
+    display: block;
+    max-width: 120px;
+    color: #b91c1c;
+    font-size: 0.68rem;
+    font-weight: 800;
+    line-height: 1.25;
+    text-align: center;
 }
 
 .item-name-cell {

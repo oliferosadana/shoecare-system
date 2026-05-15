@@ -89,15 +89,29 @@
                         <div class="create-item-row" wire:key="create-item-{{ $item['key'] }}">
                             <span class="drag-handle"><i data-lucide="grip-vertical"></i><span>Item</span><span>{{ $index + 1 }}</span></span>
 
-                            <label class="item-photo-upload">
-                                <input type="file" wire:model="beforePhotos.{{ $item['key'] }}" accept="image/*">
-                                @if (isset($beforePhotos[$item['key']]) && method_exists($beforePhotos[$item['key']], 'temporaryUrl'))
-                                    <img src="{{ $beforePhotos[$item['key']]->temporaryUrl() }}" alt="Preview foto sepatu">
-                                @else
-                                    <i data-lucide="camera"></i>
+                            <div class="item-photo-upload-wrap">
+                                <label class="item-photo-upload">
+                                    <input type="file" wire:model="beforePhotos.{{ $item['key'] }}" accept="image/*">
+                                    @if (isset($beforePhotos[$item['key']]) && method_exists($beforePhotos[$item['key']], 'temporaryUrl'))
+                                        <img src="{{ $beforePhotos[$item['key']]->temporaryUrl() }}" alt="Preview foto sepatu">
+                                    @else
+                                        <i data-lucide="camera"></i>
+                                    @endif
+                                    <span wire:loading.remove wire:target="beforePhotos.{{ $item['key'] }}">{{ isset($beforePhotos[$item['key']]) ? 'Ganti Foto' : 'Foto Real' }}</span>
+                                    <span wire:loading wire:target="beforePhotos.{{ $item['key'] }}">Upload...</span>
+                                </label>
+
+                                @if (isset($beforePhotos[$item['key']]))
+                                    <button class="remove-item-photo-button" type="button" wire:click="removeBeforePhoto('{{ $item['key'] }}')" wire:loading.attr="disabled" wire:target="removeBeforePhoto('{{ $item['key'] }}')">
+                                        <i data-lucide="x"></i>
+                                        <span>Hapus foto</span>
+                                    </button>
                                 @endif
-                                <span>{{ isset($beforePhotos[$item['key']]) ? 'Ganti Foto' : 'Foto Real' }}</span>
-                            </label>
+
+                                @error("beforePhotos.{$item['key']}")
+                                    <small class="item-photo-error">{{ $message }}</small>
+                                @enderror
+                            </div>
 
                             <div class="item-name-cell">
                                 <label class="item-field item-field--name">
