@@ -686,30 +686,96 @@ class OrderDetail extends Component
 
     private function whatsappUrl(): string
     {
-        return $this->buildWhatsappUrl("Halo Kak {$this->order->customer?->name}, order sepatu {$this->order->invoice_number} statusnya {$this->statusLabel($this->order->status)}. Total: {$this->formatRupiah($this->order->total_amount)}. Tracking: " . route('orders.track', $this->order->invoice_number) . '. Terima kasih telah menggunakan ZOLIX Shoe Care.');
+        $message = implode("\n", [
+            "Halo Kak {$this->order->customer?->name},",
+            '',
+            '*Update Order ZOLIX Shoe Care*',
+            "No. Nota: {$this->order->invoice_number}",
+            'Status: ' . $this->statusLabel($this->order->status),
+            'Total: ' . $this->formatRupiah($this->order->total_amount),
+            '',
+            'Cek detail dan tracking order melalui link berikut:',
+            route('orders.track', $this->order->invoice_number),
+            '',
+            'Terima kasih telah menggunakan ZOLIX Shoe Care.',
+        ]);
+
+        return $this->buildWhatsappUrl($message);
     }
 
     private function whatsappReminderUrl(): string
     {
         $estimate = $this->order->estimated_finished_at?->format('d M Y H:i') . ' WITA';
+        $message = implode("\n", [
+            "Halo Kak {$this->order->customer?->name},",
+            '',
+            '*Informasi Order ZOLIX Shoe Care*',
+            "No. Nota: {$this->order->invoice_number}",
+            'Status: Masih dalam penanganan',
+            "Estimasi sebelumnya: {$estimate}",
+            '',
+            'Order Kakak sedang kami prioritaskan. Mohon ditunggu, kami akan kabari kembali setelah selesai.',
+            '',
+            'Tracking order:',
+            route('orders.track', $this->order->invoice_number),
+        ]);
 
-        return $this->buildWhatsappUrl("Halo Kak {$this->order->customer?->name}, kami informasikan order {$this->order->invoice_number} masih dalam penanganan dan melewati estimasi {$estimate}. Tim ZOLIX sedang memprioritaskan order Kakak. Tracking: " . route('orders.track', $this->order->invoice_number));
+        return $this->buildWhatsappUrl($message);
     }
 
     private function whatsappReadyPickupUrl(): string
     {
-        return $this->buildWhatsappUrl("Halo Kak {$this->order->customer?->name}, order sepatu {$this->order->invoice_number} sudah selesai dan siap diambil. Total tagihan: {$this->formatRupiah($this->order->total_amount)}. Tracking: " . route('orders.track', $this->order->invoice_number) . '. Terima kasih.');
+        $message = implode("\n", [
+            "Halo Kak {$this->order->customer?->name},",
+            '',
+            '*Order Siap Diambil*',
+            "No. Nota: {$this->order->invoice_number}",
+            'Status: Selesai',
+            'Total tagihan: ' . $this->formatRupiah($this->order->total_amount),
+            '',
+            'Sepatu Kakak sudah selesai dan siap diambil di outlet.',
+            '',
+            'Tracking order:',
+            route('orders.track', $this->order->invoice_number),
+            '',
+            'Terima kasih.',
+        ]);
+
+        return $this->buildWhatsappUrl($message);
     }
 
     private function whatsappBillingUrl(): string
     {
         $paid = min((int) $this->order->payments()->where('status', 'paid')->sum('amount_paid'), $this->order->total_amount);
         $remaining = max($this->order->total_amount - $paid, 0);
-        $pickupDelivery = $this->order->pickup_delivery_fee > 0
-            ? ' Ongkos pickup/delivery: ' . $this->formatRupiah($this->order->pickup_delivery_fee) . '.'
-            : '';
+        $billingLines = [
+            'Subtotal: ' . $this->formatRupiah($this->order->subtotal),
+            'Diskon: ' . $this->formatRupiah($this->order->discount_amount),
+        ];
 
-        return $this->buildWhatsappUrl("Halo Kak {$this->order->customer?->name}, tagihan order {$this->order->invoice_number}: subtotal {$this->formatRupiah($this->order->subtotal)}, diskon {$this->formatRupiah($this->order->discount_amount)}.{$pickupDelivery} Total {$this->formatRupiah($this->order->total_amount)}, sudah dibayar {$this->formatRupiah($paid)}, sisa {$this->formatRupiah($remaining)}. Tracking: " . route('orders.track', $this->order->invoice_number));
+        if ($this->order->pickup_delivery_fee > 0) {
+            $billingLines[] = 'Pickup/Delivery: ' . $this->formatRupiah($this->order->pickup_delivery_fee);
+        }
+
+        $billingLines = array_merge($billingLines, [
+            'Total: ' . $this->formatRupiah($this->order->total_amount),
+            'Sudah dibayar: ' . $this->formatRupiah($paid),
+            'Sisa tagihan: ' . $this->formatRupiah($remaining),
+        ]);
+
+        $message = implode("\n", array_merge([
+            "Halo Kak {$this->order->customer?->name},",
+            '',
+            '*Rincian Tagihan ZOLIX Shoe Care*',
+            "No. Nota: {$this->order->invoice_number}",
+            '',
+        ], $billingLines, [
+            '',
+            'Silakan cek detail order dan pilihan pembayaran melalui link berikut:',
+            route('orders.track', $this->order->invoice_number),
+        ]));
+
+        return $this->buildWhatsappUrl($message);
     }
 
     private function buildWhatsappUrl(string $message): string
