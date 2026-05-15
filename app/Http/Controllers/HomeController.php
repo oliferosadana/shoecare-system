@@ -10,6 +10,6 @@ class HomeController extends Controller
     {
         return auth()->check()
             ? redirect()->route('dashboard')
-            : redirect()->route('login');
+            : redirect('/login');
     }
 }
