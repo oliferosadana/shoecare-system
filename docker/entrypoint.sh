@@ -3,7 +3,7 @@ set -eu
 
 cd /var/www/html
 
-mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs bootstrap/cache storage/app/public storage/app/livewire-tmp
+mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs bootstrap/cache storage/app/public/livewire-tmp
 
 if [ ! -f storage/app/public/.htaccess ]; then
     cat > storage/app/public/.htaccess <<'HTACCESS'

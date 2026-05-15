@@ -86,7 +86,7 @@ class CreateOrderForm extends Component
         $service = $this->serviceBySlug($previousServiceSlug) ?? $this->defaultService();
 
         $this->items[] = [
-            'key' => (string) Str::uuid(),
+            'key' => 'photo_' . Str::random(24),
             'service_slug' => $service?->slug ?? 'deep-clean',
             'item_name' => '',
             'size' => '',
@@ -136,11 +136,11 @@ class CreateOrderForm extends Component
     public function updatedBeforePhotos($value, string $key): void
     {
         $this->validateOnly("beforePhotos.{$key}", [
-            "beforePhotos.{$key}" => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120', 'dimensions:max_width=6000,max_height=6000'],
+            "beforePhotos.{$key}" => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:20480', 'dimensions:max_width=6000,max_height=6000'],
         ], [
             "beforePhotos.{$key}.image" => 'Foto sepatu harus berupa file gambar.',
             "beforePhotos.{$key}.mimes" => 'Foto sepatu harus berformat JPG, JPEG, PNG, atau WEBP.',
-            "beforePhotos.{$key}.max" => 'Ukuran foto sepatu maksimal 5MB.',
+            "beforePhotos.{$key}.max" => 'Ukuran foto sepatu maksimal 20MB.',
             "beforePhotos.{$key}.dimensions" => 'Resolusi foto sepatu maksimal 6000x6000 piksel.',
         ]);
 
@@ -197,7 +197,7 @@ class CreateOrderForm extends Component
             'items.*.size' => ['nullable', 'string', 'max:20'],
             'items.*.quantity' => ['required', 'integer', 'min:1', 'max:99'],
             'items.*.unit_price' => ['required', 'integer', 'min:0'],
-            'beforePhotos.*' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120', 'dimensions:max_width=6000,max_height=6000'],
+            'beforePhotos.*' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:20480', 'dimensions:max_width=6000,max_height=6000'],
         ], [
             'customerName.required' => 'Nama pelanggan wajib diisi.',
             'phone.required' => 'No. WhatsApp wajib diisi.',
@@ -208,7 +208,7 @@ class CreateOrderForm extends Component
             'items.*.unit_price.required' => 'Harga item wajib diisi.',
             'beforePhotos.*.image' => 'Foto sepatu harus berupa file gambar.',
             'beforePhotos.*.mimes' => 'Foto sepatu harus berformat JPG, JPEG, PNG, atau WEBP.',
-            'beforePhotos.*.max' => 'Ukuran foto sepatu maksimal 5MB.',
+            'beforePhotos.*.max' => 'Ukuran foto sepatu maksimal 20MB.',
             'beforePhotos.*.dimensions' => 'Resolusi foto sepatu maksimal 6000x6000 piksel.',
         ]);
 

@@ -135,13 +135,13 @@ class OrderController extends Controller
             'items.*.quantity' => ['required', 'integer', 'min:1', 'max:99'],
             'items.*.unit_price' => ['required', 'integer', 'min:0'],
             'items.*.notes' => ['nullable', 'string', 'max:1000'],
-            'items.*.before_photo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120', 'dimensions:max_width=6000,max_height=6000'],
+            'items.*.before_photo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:20480', 'dimensions:max_width=6000,max_height=6000'],
         ], [
             'required' => ':attribute wajib diisi.',
             'items.required' => 'Minimal satu item sepatu wajib tersedia.',
             'items.*.before_photo.image' => 'Foto sepatu harus berupa file gambar.',
             'items.*.before_photo.mimes' => 'Foto sepatu harus berformat JPG, JPEG, PNG, atau WEBP.',
-            'items.*.before_photo.max' => 'Ukuran foto sepatu maksimal 5MB.',
+            'items.*.before_photo.max' => 'Ukuran foto sepatu maksimal 20MB.',
             'items.*.before_photo.dimensions' => 'Resolusi foto sepatu maksimal 6000x6000 piksel.',
         ], [
             'customer_name' => 'Nama pelanggan',
@@ -226,14 +226,14 @@ class OrderController extends Controller
             'items.*.size' => ['nullable', 'string', 'max:20'],
             'items.*.quantity' => ['required', 'integer', 'min:1', 'max:99'],
             'items.*.unit_price' => ['required', 'integer', 'min:0'],
-            'items.*.before_photo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120', 'dimensions:max_width=6000,max_height=6000'],
+            'items.*.before_photo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:20480', 'dimensions:max_width=6000,max_height=6000'],
         ], [
             'required' => ':attribute wajib diisi.',
             'items.required' => 'Minimal satu item sepatu wajib ditambahkan.',
             'items.min' => 'Minimal satu item sepatu wajib ditambahkan.',
             'items.*.before_photo.image' => 'Foto sepatu harus berupa file gambar.',
             'items.*.before_photo.mimes' => 'Foto sepatu harus berformat JPG, JPEG, PNG, atau WEBP.',
-            'items.*.before_photo.max' => 'Ukuran foto sepatu maksimal 5MB.',
+            'items.*.before_photo.max' => 'Ukuran foto sepatu maksimal 20MB.',
             'items.*.before_photo.dimensions' => 'Resolusi foto sepatu maksimal 6000x6000 piksel.',
         ], [
             'customer_name' => 'Nama pelanggan',
@@ -375,12 +375,12 @@ class OrderController extends Controller
         abort_unless($item->order_id === $order->id, 404);
 
         $validated = $request->validate([
-            'after_photo' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120', 'dimensions:max_width=6000,max_height=6000'],
+            'after_photo' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:20480', 'dimensions:max_width=6000,max_height=6000'],
         ], [
             'after_photo.required' => 'Foto after wajib dipilih.',
             'after_photo.image' => 'Foto after harus berupa gambar.',
             'after_photo.mimes' => 'Foto after harus berformat JPG, JPEG, PNG, atau WEBP.',
-            'after_photo.max' => 'Ukuran foto after maksimal 5MB.',
+            'after_photo.max' => 'Ukuran foto after maksimal 20MB.',
             'after_photo.dimensions' => 'Resolusi foto after maksimal 6000x6000 piksel.',
         ]);
 

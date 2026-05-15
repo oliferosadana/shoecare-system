@@ -89,12 +89,12 @@ class OrderDetail extends Component
         $item = $this->order->items()->whereKey($itemId)->firstOrFail();
 
         $this->validate([
-            "afterPhotos.{$itemId}" => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120', 'dimensions:max_width=6000,max_height=6000'],
+            "afterPhotos.{$itemId}" => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:20480', 'dimensions:max_width=6000,max_height=6000'],
         ], [
             "afterPhotos.{$itemId}.required" => 'Foto after wajib dipilih.',
             "afterPhotos.{$itemId}.image" => 'Foto after harus berupa gambar.',
             "afterPhotos.{$itemId}.mimes" => 'Foto after harus berformat JPG, JPEG, PNG, atau WEBP.',
-            "afterPhotos.{$itemId}.max" => 'Ukuran foto after maksimal 5MB.',
+            "afterPhotos.{$itemId}.max" => 'Ukuran foto after maksimal 20MB.',
             "afterPhotos.{$itemId}.dimensions" => 'Resolusi foto after maksimal 6000x6000 piksel.',
         ]);
 
