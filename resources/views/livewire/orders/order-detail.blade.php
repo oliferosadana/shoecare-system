@@ -63,8 +63,24 @@
                                 @if ($item->before_photo_path)
                                     <img src="{{ Storage::url($item->before_photo_path) }}" alt="Foto before {{ $item->item_name }}">
                                 @else
-                                    <i data-lucide="camera-off"></i>
-                                    <span>Belum ada foto</span>
+                                    <label>
+                                        <input type="file" wire:model="beforePhotos.{{ $item->id }}" accept="image/*">
+                                        <i data-lucide="camera"></i>
+                                        <span>Upload before</span>
+                                    </label>
+                                @endif
+                                @if ($item->before_photo_path)
+                                    <label class="detail-photo-replace">
+                                        <input type="file" wire:model="beforePhotos.{{ $item->id }}" accept="image/*">
+                                        <i data-lucide="camera"></i>
+                                        <span>Ganti before</span>
+                                    </label>
+                                @endif
+                                @if (isset($beforePhotos[$item->id]))
+                                    <button type="button" wire:click="uploadBeforePhoto({{ $item->id }})" wire:loading.attr="disabled" wire:target="uploadBeforePhoto({{ $item->id }})">
+                                        <i data-lucide="upload"></i>
+                                        <span>Simpan Foto</span>
+                                    </button>
                                 @endif
                             </div>
                             <div class="detail-photo">

@@ -2973,6 +2973,41 @@ input {
     cursor: pointer;
 }
 
+.detail-photo .detail-photo-replace,
+.detail-photo > button {
+    position: absolute;
+    right: 7px;
+    bottom: 7px;
+    z-index: 4;
+    display: inline-flex;
+    width: auto;
+    height: auto;
+    min-height: 28px;
+    align-items: center;
+    gap: 5px;
+    padding: 0 8px;
+    border: 0;
+    border-radius: 999px;
+    color: #fff;
+    background: rgba(15, 23, 42, 0.78);
+    font-size: 0.64rem;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+.detail-photo > button {
+    left: 7px;
+    right: 7px;
+    justify-content: center;
+    background: #111827;
+}
+
+.detail-photo .detail-photo-replace svg,
+.detail-photo > button svg {
+    width: 13px;
+    height: 13px;
+}
+
 .detail-photo input {
     position: absolute;
     inset: 0;

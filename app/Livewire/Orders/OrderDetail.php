@@ -34,6 +34,8 @@ class OrderDetail extends Component
 
     public array $afterPhotos = [];
 
+    public array $beforePhotos = [];
+
     public ?string $success = null;
 
     public function mount(Order $order): void
@@ -116,6 +118,42 @@ class OrderDetail extends Component
 
         unset($this->afterPhotos[$itemId]);
         $this->success = 'Foto after berhasil diupload.';
+        $this->refreshOrder();
+        $this->dispatch('refresh-icons');
+    }
+
+    public function uploadBeforePhoto(int $itemId): void
+    {
+        $item = $this->order->items()->whereKey($itemId)->firstOrFail();
+
+        $this->validate([
+            "beforePhotos.{$itemId}" => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:20480', 'dimensions:max_width=6000,max_height=6000'],
+        ], [
+            "beforePhotos.{$itemId}.required" => 'Foto before wajib dipilih.',
+            "beforePhotos.{$itemId}.image" => 'Foto before harus berupa gambar.',
+            "beforePhotos.{$itemId}.mimes" => 'Foto before harus berformat JPG, JPEG, PNG, atau WEBP.',
+            "beforePhotos.{$itemId}.max" => 'Ukuran foto before maksimal 20MB.',
+            "beforePhotos.{$itemId}.dimensions" => 'Resolusi foto before maksimal 6000x6000 piksel.',
+        ]);
+
+        if ($item->before_photo_path) {
+            Storage::disk('public')->delete($item->before_photo_path);
+        }
+
+        $item->update([
+            'before_photo_path' => $this->beforePhotos[$itemId]->store('order-photos/before', 'public'),
+        ]);
+
+        $this->order->timelines()->create([
+            'status' => 'foto_before',
+            'label' => 'Foto before diupload',
+            'description' => "Foto kondisi awal untuk {$item->item_name} berhasil ditambahkan.",
+            'logged_at' => now(),
+            'created_by' => auth()->id(),
+        ]);
+
+        unset($this->beforePhotos[$itemId]);
+        $this->success = 'Foto before berhasil diupload.';
         $this->refreshOrder();
         $this->dispatch('refresh-icons');
     }
