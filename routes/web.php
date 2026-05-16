@@ -34,6 +34,7 @@ Route::post('/track/{invoiceNumber}/payment-method/{payment}/proof', [PublicPaym
     ->middleware('throttle:8,1')
     ->name('orders.track.payment-method.proof');
 Route::post('/webhooks/autogopay', [QrisPaymentController::class, 'webhook'])->name('webhooks.autogopay');
+Route::post('/webhook/gopay', [QrisPaymentController::class, 'webhook'])->name('webhooks.autogopay.legacy');
 
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
