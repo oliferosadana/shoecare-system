@@ -22,6 +22,41 @@
                 <small>Estimasi selesai: {{ $order->estimated_finished_at?->format('d M Y H:i') ?? '-' }} WITA</small>
             </section>
 
+            @php
+                $trackingFlowSteps = [
+                    ['status' => 'diterima', 'label' => 'Diterima', 'caption' => 'Order diterima outlet'],
+                    ['status' => 'proses', 'label' => 'Proses', 'caption' => 'Sepatu sedang dikerjakan'],
+                    ['status' => 'selesai', 'label' => $order->usesDelivery() ? 'Siap Diantar' : 'Selesai', 'caption' => $order->usesDelivery() ? 'Siap dikirim ke pelanggan' : 'Siap diambil pelanggan'],
+                ];
+                $trackingFlowProgress = match ($order->status) {
+                    'proses' => 1,
+                    'selesai', 'menunggu_diambil', 'diambil' => 2,
+                    default => 0,
+                };
+            @endphp
+
+            <section class="invoice-flow tracking-flow" aria-label="Timeline status order">
+                <div class="invoice-flow-head">
+                    <span>Progress Order</span>
+                    <strong>{{ $order->displayStatusLabel() }}</strong>
+                </div>
+                <div class="invoice-flow-steps">
+                    @foreach ($trackingFlowSteps as $index => $step)
+                        <div class="invoice-flow-step {{ $index <= $trackingFlowProgress ? 'is-complete' : '' }} {{ $index < $trackingFlowProgress ? 'is-past' : '' }} {{ $index === $trackingFlowProgress ? 'is-current' : '' }}">
+                            <div class="invoice-flow-dot">
+                                @if ($index < $trackingFlowProgress)
+                                    <i data-lucide="check"></i>
+                                @else
+                                    <span>{{ $index + 1 }}</span>
+                                @endif
+                            </div>
+                            <strong>{{ $step['label'] }}</strong>
+                            <small>{{ $step['caption'] }}</small>
+                        </div>
+                    @endforeach
+                </div>
+            </section>
+
             @if (session('success'))
                 <div class="dashboard-flash">
                     <strong>Berhasil</strong>

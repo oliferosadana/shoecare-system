@@ -42,7 +42,7 @@
                 </div>
                 <div class="invoice-flow-steps">
                     @foreach ($invoiceFlowSteps as $index => $step)
-                        <div class="invoice-flow-step {{ $index <= $invoiceFlowProgress ? 'is-complete' : '' }} {{ $index === $invoiceFlowProgress ? 'is-current' : '' }}">
+                        <div class="invoice-flow-step {{ $index <= $invoiceFlowProgress ? 'is-complete' : '' }} {{ $index < $invoiceFlowProgress ? 'is-past' : '' }} {{ $index === $invoiceFlowProgress ? 'is-current' : '' }}">
                             <div class="invoice-flow-dot">
                                 @if ($index < $invoiceFlowProgress)
                                     <i data-lucide="check"></i>
