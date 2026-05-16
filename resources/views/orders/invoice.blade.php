@@ -22,6 +22,41 @@
                 <div><span>Estimasi Selesai</span><strong>{{ $order->estimated_finished_at?->format('d M Y H:i') ?? '-' }} WITA</strong><small>{{ $order->displayStatusLabel() }}</small></div>
             </section>
 
+            @php
+                $invoiceFlowSteps = [
+                    ['status' => 'diterima', 'label' => 'Diterima', 'caption' => 'Order diterima outlet'],
+                    ['status' => 'proses', 'label' => 'Proses', 'caption' => 'Sepatu sedang dikerjakan'],
+                    ['status' => 'selesai', 'label' => $order->usesDelivery() ? 'Siap Diantar' : 'Selesai', 'caption' => $order->usesDelivery() ? 'Siap dikirim ke pelanggan' : 'Siap diambil pelanggan'],
+                ];
+                $invoiceFlowProgress = match ($order->status) {
+                    'proses' => 1,
+                    'selesai', 'menunggu_diambil', 'diambil' => 2,
+                    default => 0,
+                };
+            @endphp
+
+            <section class="invoice-flow" aria-label="Timeline status order">
+                <div class="invoice-flow-head">
+                    <span>Alur Order</span>
+                    <strong>{{ $order->displayStatusLabel() }}</strong>
+                </div>
+                <div class="invoice-flow-steps">
+                    @foreach ($invoiceFlowSteps as $index => $step)
+                        <div class="invoice-flow-step {{ $index <= $invoiceFlowProgress ? 'is-complete' : '' }} {{ $index === $invoiceFlowProgress ? 'is-current' : '' }}">
+                            <div class="invoice-flow-dot">
+                                @if ($index < $invoiceFlowProgress)
+                                    <i data-lucide="check"></i>
+                                @else
+                                    <span>{{ $index + 1 }}</span>
+                                @endif
+                            </div>
+                            <strong>{{ $step['label'] }}</strong>
+                            <small>{{ $step['caption'] }}</small>
+                        </div>
+                    @endforeach
+                </div>
+            </section>
+
             <table class="invoice-table">
                 <thead>
                     <tr><th>Item</th><th>Layanan</th><th>Qty</th><th>Harga</th><th>Subtotal</th></tr>
