@@ -77,7 +77,7 @@
                                     </label>
                                 @endif
                                 @if (isset($beforePhotos[$item->id]))
-                                    <button type="button" wire:click="uploadBeforePhoto({{ $item->id }})" wire:loading.attr="disabled" wire:target="uploadBeforePhoto({{ $item->id }})">
+                                    <button class="detail-photo-save" type="button" wire:click="uploadBeforePhoto({{ $item->id }})" wire:loading.attr="disabled" wire:target="uploadBeforePhoto({{ $item->id }})">
                                         <i data-lucide="upload"></i>
                                         <span>Simpan Foto</span>
                                     </button>
@@ -94,7 +94,7 @@
                                         <span>Upload after</span>
                                     </label>
                                     @if (isset($afterPhotos[$item->id]))
-                                        <button type="button" wire:click="uploadAfterPhoto({{ $item->id }})" wire:loading.attr="disabled" wire:target="uploadAfterPhoto({{ $item->id }})">
+                                        <button class="detail-photo-save" type="button" wire:click="uploadAfterPhoto({{ $item->id }})" wire:loading.attr="disabled" wire:target="uploadAfterPhoto({{ $item->id }})">
                                             <i data-lucide="upload"></i>
                                             <span>Simpan Foto</span>
                                         </button>
