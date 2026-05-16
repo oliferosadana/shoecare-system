@@ -2849,7 +2849,7 @@ input {
 
 .detail-item-card {
     display: grid;
-    grid-template-columns: 116px 1fr auto;
+    grid-template-columns: max-content minmax(0, 1fr) auto;
     gap: 18px;
     align-items: center;
     padding: 14px;
@@ -2873,16 +2873,26 @@ input {
     white-space: nowrap;
 }
 
+.detail-item-card > div:not(.detail-photo-pair) {
+    min-width: 0;
+}
+
+.detail-item-card h3,
+.detail-item-card p,
+.detail-item-card small {
+    overflow-wrap: anywhere;
+}
+
 .detail-photo {
     position: relative;
     display: grid;
     place-items: center;
     gap: 8px;
-    width: 124px;
-    height: 104px;
+    width: 116px;
+    height: 116px;
     overflow: hidden;
-    border: 2px solid #e2e8f0;
-    border-radius: 999px;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
     color: #64748b;
     background: #f8fafc;
     font-size: 0.8rem;
@@ -2892,16 +2902,15 @@ input {
 
 .detail-photo b {
     position: absolute;
-    top: 7px;
-    left: 50%;
+    top: 8px;
+    left: 8px;
     z-index: 8;
-    padding: 4px 10px;
+    padding: 4px 8px;
     border-radius: 999px;
     color: #111827;
     background: var(--lime);
     font-size: 0.68rem;
     line-height: 1;
-    transform: translateX(-50%);
     box-shadow: 0 6px 14px rgba(15, 23, 42, 0.18);
 }
 
@@ -2961,7 +2970,7 @@ input {
 
 .detail-photo-pair {
     display: grid;
-    grid-template-columns: repeat(2, 124px);
+    grid-template-columns: repeat(2, 116px);
     gap: 10px;
 }
 
@@ -7324,11 +7333,11 @@ input {
     }
 
     .detail-item-card {
-        grid-template-columns: 96px 1fr;
+        grid-template-columns: 1fr;
     }
 
     .detail-item-card > strong {
-        grid-column: 2;
+        grid-column: auto;
     }
 
     .summary-shoe {
