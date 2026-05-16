@@ -19,6 +19,7 @@
                 <p>No. Nota</p>
                 <h1>{{ $order->invoice_number }}</h1>
                 <span>{{ $order->customer->name }} · {{ $order->received_at->format('d M Y H:i') }} WITA</span>
+                <small>Estimasi selesai: {{ $order->estimated_finished_at?->format('d M Y H:i') ?? '-' }} WITA</small>
             </section>
 
             @if (session('success'))

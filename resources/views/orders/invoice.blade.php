@@ -19,6 +19,7 @@
             <section class="invoice-meta">
                 <div><span>Pelanggan</span><strong>{{ $order->customer->name }}</strong><small>{{ $order->customer->phone }}</small></div>
                 <div><span>Tanggal</span><strong>{{ $order->received_at->format('d M Y H:i') }} WITA</strong><small>{{ $order->customer->address ?: '-' }}</small></div>
+                <div><span>Estimasi Selesai</span><strong>{{ $order->estimated_finished_at?->format('d M Y H:i') ?? '-' }} WITA</strong><small>{{ $order->displayStatusLabel() }}</small></div>
             </section>
 
             <table class="invoice-table">
