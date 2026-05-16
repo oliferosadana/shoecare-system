@@ -67,7 +67,7 @@
                                         <span>Rp {{ number_format($order->total_amount, 0, ',', '.') }}</span>
                                         <span>Rp {{ number_format($paid, 0, ',', '.') }}</span>
                                         <span>Rp {{ number_format(max($order->total_amount - $paid, 0), 0, ',', '.') }}</span>
-                                        <b>{{ match($order->status) { 'proses' => 'Proses', 'selesai' => 'Selesai', 'diambil' => 'Diambil', 'menunggu_diambil' => 'Menunggu', 'dibatalkan' => 'Batal', default => 'Diterima' } }}</b>
+                                            <b>{{ $order->status === 'dibatalkan' ? 'Batal' : $order->displayStatusLabel() }}</b>
                                     </a>
                                 @empty
                                     <div class="orders-table__empty"><strong>Belum ada order</strong><p>Buat order pertama untuk pelanggan ini.</p></div>

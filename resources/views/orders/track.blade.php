@@ -11,7 +11,7 @@
             <header class="tracking-header">
                 <img src="{{ asset('assets/logo-putih.png') }}" alt="ZOLIX Shoe Care">
                 <span class="dashboard-status tag--{{ match($order->status) { 'proses' => 'proses', 'selesai' => 'selesai', 'diambil' => 'diambil', 'menunggu_diambil' => 'menunggu', 'dibatalkan' => 'dibatalkan', default => 'diterima' } }}">
-                    {{ match($order->status) { 'proses' => 'Proses', 'selesai' => 'Selesai', 'diambil' => 'Diambil', 'menunggu_diambil' => 'Menunggu Diambil', 'dibatalkan' => 'Dibatalkan', default => 'Diterima' } }}
+                    {{ $order->displayStatusLabel() }}
                 </span>
             </header>
 

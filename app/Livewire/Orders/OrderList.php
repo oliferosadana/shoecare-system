@@ -140,7 +140,7 @@ class OrderList extends Component
             'service' => $services->isNotEmpty() ? $services->join(' + ') : '-',
             'date' => $order->received_at->translatedFormat('d M Y'),
             'time' => $order->received_at->format('H:i'),
-            'status' => $this->statusLabel($order->status),
+            'status' => $order->displayStatusLabel(),
             'statusClass' => 'tag--' . $this->statusClass($order->status),
             'amount' => $this->formatRupiah($order->total_amount),
             'itemName' => $firstItem?->item_name ?? '-',

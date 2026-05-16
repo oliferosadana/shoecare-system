@@ -13,5 +13,5 @@
         <small>{{ $order->items->sum('quantity') }} pasang</small>
     </div>
     <time>{{ $order->estimated_finished_at?->format('d M Y H:i') ?? '-' }} WITA</time>
-    <b>{{ match($order->status) { 'proses' => 'Proses', 'selesai' => 'Selesai', 'menunggu_diambil' => 'Menunggu', default => 'Diterima' } }}</b>
+            <b>{{ $order->displayStatusLabel() }}</b>
 </a>

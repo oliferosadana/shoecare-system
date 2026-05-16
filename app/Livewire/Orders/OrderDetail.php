@@ -72,8 +72,8 @@ class OrderDetail extends Component
         $timelineStatus = $status === 'selesai' ? 'menunggu_diambil' : $status;
         $this->order->timelines()->create([
             'status' => $timelineStatus,
-            'label' => $this->statusLabel($timelineStatus),
-            'description' => $status === 'selesai' ? 'Order selesai dan siap diambil pelanggan.' : $this->timelineDescription($status),
+            'label' => $timelineStatus === 'menunggu_diambil' ? $this->order->readyOrderLabel() : $this->statusLabel($timelineStatus),
+            'description' => $timelineStatus === 'menunggu_diambil' ? $this->order->readyOrderDescription() : $this->timelineDescription($status),
             'logged_at' => now(),
             'created_by' => auth()->id(),
         ]);
@@ -638,7 +638,7 @@ class OrderDetail extends Component
         return match ($status) {
             'proses' => 'Order masuk proses pengerjaan.',
             'selesai' => 'Order selesai dikerjakan dan siap dikonfirmasi ke pelanggan.',
-            'menunggu_diambil' => 'Order siap diambil oleh pelanggan.',
+            'menunggu_diambil' => $this->order->readyOrderDescription(),
             'diambil' => 'Order sudah diambil pelanggan.',
             'dibatalkan' => 'Order dibatalkan.',
             default => 'Order diterima oleh outlet.',
@@ -691,7 +691,7 @@ class OrderDetail extends Component
             '',
             '*Update Order ZOLIX Shoe Care*',
             "No. Nota: {$this->order->invoice_number}",
-            'Status: ' . $this->statusLabel($this->order->status),
+            'Status: ' . $this->order->displayStatusLabel(),
             'Total: ' . $this->formatRupiah($this->order->total_amount),
             '',
             'Cek detail dan tracking order melalui link berikut:',
@@ -728,12 +728,12 @@ class OrderDetail extends Component
         $message = implode("\n", [
             "Halo Kak {$this->order->customer?->name},",
             '',
-            '*Order Siap Diambil*',
+            '*' . $this->order->readyOrderLabel() . '*',
             "No. Nota: {$this->order->invoice_number}",
-            'Status: Selesai',
+            'Status: ' . ($this->order->usesDelivery() ? 'Siap Diantar' : 'Selesai'),
             'Total tagihan: ' . $this->formatRupiah($this->order->total_amount),
             '',
-            'Sepatu Kakak sudah selesai dan siap diambil di outlet.',
+            $this->order->readyWhatsappDescription(),
             '',
             'Tracking order:',
             route('orders.track', $this->order->invoice_number),

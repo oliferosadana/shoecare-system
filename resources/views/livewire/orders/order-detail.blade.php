@@ -21,7 +21,7 @@
                 <p>{{ $order->notes ?: 'Order tersimpan di sistem ZOLIX Shoe Care.' }}</p>
             </div>
             <span class="dashboard-status tag--{{ match($order->status) { 'proses' => 'proses', 'selesai' => 'selesai', 'diambil' => 'diambil', 'menunggu_diambil' => 'menunggu', 'dibatalkan' => 'dibatalkan', default => 'diterima' } }}">
-                {{ match($order->status) { 'proses' => 'Proses', 'selesai' => 'Selesai', 'diambil' => 'Diambil', 'menunggu_diambil' => 'Menunggu Diambil', 'dibatalkan' => 'Dibatalkan', default => 'Diterima' } }}
+                {{ $order->displayStatusLabel() }}
             </span>
             @if ($order->estimated_finished_at && $order->estimated_finished_at->isPast() && ! in_array($order->status, ['diambil', 'dibatalkan'], true))
                 <span class="deadline-pill is-overdue">Deadline lewat</span>
@@ -289,7 +289,7 @@
                 </a>
                 <a class="reset-order-button whatsapp-ready-button" href="{{ $whatsappReadyPickupUrl }}" target="_blank" rel="noopener">
                     <i data-lucide="package-check"></i>
-                    <span>Order Siap Diambil</span>
+                    <span>{{ $order->readyOrderLabel() }}</span>
                 </a>
                 <a class="reset-order-button whatsapp-billing-button" href="{{ $whatsappBillingUrl }}" target="_blank" rel="noopener">
                     <i data-lucide="receipt-text"></i>

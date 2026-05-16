@@ -137,7 +137,7 @@ class DashboardController extends Controller
             'service' => $services->isNotEmpty() ? $services->join(' + ') : '-',
             'date' => $order->received_at->translatedFormat('d M Y'),
             'time' => $order->received_at->format('H:i'),
-            'status' => $this->statusLabel($order->status),
+            'status' => $order->displayStatusLabel(),
             'statusClass' => 'tag--' . $this->statusClass($order->status),
             'amount' => 'Rp ' . number_format($order->total_amount, 0, ',', '.'),
             'qty' => $order->items->sum('quantity') . ' Pasang',
