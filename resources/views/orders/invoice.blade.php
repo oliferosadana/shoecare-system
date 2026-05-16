@@ -33,6 +33,7 @@
                     'selesai', 'menunggu_diambil', 'diambil' => 2,
                     default => 0,
                 };
+                $invoiceFlowFinished = $order->status === 'diambil';
             @endphp
 
             <section class="invoice-flow" aria-label="Timeline status order">
@@ -43,7 +44,7 @@
                     @foreach ($invoiceFlowSteps as $index => $step)
                         <div class="invoice-flow-step {{ $index <= $invoiceFlowProgress ? 'is-complete' : '' }} {{ $index < $invoiceFlowProgress ? 'is-past' : '' }} {{ $index === $invoiceFlowProgress ? 'is-current' : '' }}">
                             <div class="invoice-flow-dot">
-                                @if ($index < $invoiceFlowProgress)
+                                @if ($invoiceFlowFinished || $index < $invoiceFlowProgress)
                                     <i data-lucide="check"></i>
                                 @else
                                     <span>{{ $index + 1 }}</span>
