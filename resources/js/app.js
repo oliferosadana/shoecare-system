@@ -161,6 +161,58 @@ const statusProgressMap = {
     Dibatalkan: 1,
 };
 
+let iconRefreshTimer = null;
+
+const hasPendingLucideIcons = (root = document) => Boolean(root?.querySelector?.('[data-lucide]'));
+
+const refreshLucideIcons = () => {
+    if (!hasPendingLucideIcons()) {
+        return;
+    }
+
+    createIcons({ icons });
+};
+
+const scheduleIconRefresh = () => {
+    window.clearTimeout(iconRefreshTimer);
+    iconRefreshTimer = window.setTimeout(() => {
+        requestAnimationFrame(refreshLucideIcons);
+    }, 30);
+};
+
+const observeIconChanges = () => {
+    if (!document.body || window.__zolixIconObserverStarted) {
+        return;
+    }
+
+    window.__zolixIconObserverStarted = true;
+
+    new MutationObserver((mutations) => {
+        const shouldRefresh = mutations.some((mutation) => {
+            if (mutation.type === 'attributes') {
+                return mutation.attributeName === 'data-lucide';
+            }
+
+            return Array.from(mutation.addedNodes).some((node) => {
+                if (node.nodeType !== Node.ELEMENT_NODE) {
+                    return false;
+                }
+
+                return node.matches?.('[data-lucide]') || hasPendingLucideIcons(node);
+            });
+        });
+
+        if (shouldRefresh) {
+            scheduleIconRefresh();
+        }
+    }).observe(document.body, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        attributeFilter: ['data-lucide'],
+    });
+};
+
 window.shoeCareApp = (payload = {}) => ({
     activeScreen: 'orders',
     activeStatus: 'Semua',
@@ -250,7 +302,7 @@ window.shoeCareApp = (payload = {}) => ({
     },
 
     refreshIcons() {
-        queueMicrotask(() => createIcons({ icons }));
+        scheduleIconRefresh();
     },
 
     selectCreateService(slug) {
@@ -460,11 +512,26 @@ if (! hasLivewireMarkup()) {
 
 document.addEventListener('livewire:init', () => {
     registerAdminNavStore(window.Alpine);
-    queueMicrotask(() => createIcons({ icons }));
+    scheduleIconRefresh();
+
+    window.Livewire?.hook?.('morph.updated', scheduleIconRefresh);
+    window.Livewire?.hook?.('commit', ({ succeed } = {}) => {
+        if (typeof succeed === 'function') {
+            succeed(scheduleIconRefresh);
+        } else {
+            scheduleIconRefresh();
+        }
+    });
 });
 
 if (! hasLivewireMarkup() && ! window.Livewire && ! window.Alpine?.started) {
     Alpine.start();
 }
-window.addEventListener('refresh-icons', () => queueMicrotask(() => createIcons({ icons })));
-queueMicrotask(() => createIcons({ icons }));
+window.addEventListener('refresh-icons', scheduleIconRefresh);
+document.addEventListener('livewire:navigated', scheduleIconRefresh);
+document.addEventListener('DOMContentLoaded', () => {
+    observeIconChanges();
+    scheduleIconRefresh();
+});
+observeIconChanges();
+scheduleIconRefresh();
