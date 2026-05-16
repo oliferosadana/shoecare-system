@@ -26,6 +26,7 @@ return Application::configure(basePath: dirname(__DIR__))
             SecurityHeaders::class,
         ]);
         $middleware->validateCsrfTokens(except: [
+            'webhook/gopay',
             'webhooks/autogopay',
         ]);
     })
