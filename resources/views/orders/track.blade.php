@@ -10,9 +10,6 @@
         <main class="tracking-shell">
             <header class="tracking-header">
                 <img src="{{ asset('assets/logo-putih.png') }}" alt="ZOLIX Shoe Care">
-                <span class="dashboard-status tag--{{ match($order->status) { 'proses' => 'proses', 'selesai' => 'selesai', 'diambil' => 'diambil', 'menunggu_diambil' => 'menunggu', 'dibatalkan' => 'dibatalkan', default => 'diterima' } }}">
-                    {{ $order->displayStatusLabel() }}
-                </span>
             </header>
 
             <section class="tracking-hero">
@@ -38,7 +35,6 @@
             <section class="invoice-flow tracking-flow" aria-label="Timeline status order">
                 <div class="invoice-flow-head">
                     <span>Progress Order</span>
-                    <strong>{{ $order->displayStatusLabel() }}</strong>
                 </div>
                 <div class="invoice-flow-steps">
                     @foreach ($trackingFlowSteps as $index => $step)
