@@ -3383,6 +3383,64 @@ input {
     background: var(--lime);
 }
 
+.customer-contact-info {
+    display: grid;
+    grid-template-columns: minmax(220px, 1fr) repeat(2, minmax(170px, 0.65fr));
+    gap: 12px;
+    margin: 0 0 24px;
+    padding: 14px;
+    border: 1px solid #b8e600;
+    border-radius: 16px;
+    background: #fbfff2;
+}
+
+.customer-contact-info > div,
+.customer-contact-info a {
+    display: grid;
+    gap: 6px;
+    align-content: center;
+}
+
+.customer-contact-info > div > span {
+    color: #4d8d00;
+    font-size: 0.74rem;
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.customer-contact-info strong {
+    color: #111827;
+}
+
+.customer-contact-info a {
+    grid-template-columns: 22px 1fr;
+    padding: 11px 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    background: #ffffff;
+    color: #111827;
+    text-decoration: none;
+}
+
+.customer-contact-info a svg {
+    grid-row: span 2;
+    width: 20px;
+    height: 20px;
+    color: #5f7f00;
+}
+
+.customer-contact-info a span {
+    color: #64748b;
+    font-size: 0.76rem;
+    font-weight: 800;
+}
+
+.customer-contact-info a strong {
+    color: #166534;
+    font-size: 0.9rem;
+}
+
 .invoice-qris h2,
 .tracking-qris h2,
 .invoice-qris p,
@@ -3449,6 +3507,10 @@ input {
 
     .invoice-payment-links {
         display: grid;
+    }
+
+    .customer-contact-info {
+        grid-template-columns: 1fr;
     }
 }
 

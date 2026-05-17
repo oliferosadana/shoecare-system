@@ -19,6 +19,8 @@
                 <small>Estimasi selesai: {{ $order->estimated_finished_at?->format('d M Y H:i') ?? '-' }} WITA</small>
             </section>
 
+            @include('partials.customer-contact-info')
+
             @php
                 $trackingFlowSteps = [
                     ['status' => 'diterima', 'label' => 'Diterima', 'caption' => 'Order diterima outlet'],

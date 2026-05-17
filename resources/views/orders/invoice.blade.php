@@ -22,6 +22,8 @@
                 <div><span>Estimasi Selesai</span><strong>{{ $order->estimated_finished_at?->format('d M Y H:i') ?? '-' }} WITA</strong></div>
             </section>
 
+            @include('partials.customer-contact-info')
+
             @php
                 $invoiceFlowSteps = [
                     ['status' => 'diterima', 'label' => 'Diterima', 'caption' => 'Order diterima outlet'],
